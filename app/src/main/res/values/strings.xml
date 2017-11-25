@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Txt2Morse</string>
+    <string name="title_edit_text_morse">Morse</string>
+    <string name="title_edit_text_text">Text</string>
+</resources>
