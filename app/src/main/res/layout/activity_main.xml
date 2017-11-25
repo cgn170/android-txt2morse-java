@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.freexd.txt2morse.MainActivity">
+    tools:context="io.freexd.txt2morse.MainActivity"
+
+    >
 
     <TableLayout
+        android:id="@+id/tableLayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:stretchColumns="1"
-        android:id="@+id/tableLayout">
+        android:stretchColumns="0"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+
+        >
         <TableRow
             android:gravity="center_horizontal"
             >
@@ -30,9 +36,15 @@
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/sb_use_listener"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:kswTextOn="   Flashlight   "
+                android:layout_height="40dp"
+                android:gravity="right"
                 app:kswTextOff="   Sound   "
+                app:kswTextOn="   Flashlight   "
+                android:layout_gravity="right"
+                app:kswThumbWidth="32dp"
+                app:kswThumbHeight="32dp"
+                app:kswTextAdjust="@dimen/ksw_md_thumb_shadow_offset"
+
 
                 />
         </TableRow>
@@ -43,7 +55,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="0dp"
                 android:orientation="vertical"
 
                 >
@@ -90,24 +102,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:ems="10"
-                    android:inputType="textMultiLine" />
+                    android:inputType="textMultiLine"
+                    android:focusable="true"
+                    android:enabled="false"
+                    />
 
             </LinearLayout>
 
         </TableRow>
         <TableRow
             android:gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
 
             >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:background="#ffffff"
+                android:gravity="center_horizontal">
+
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Convert" />
+                android:text="Copy" />
+            <Button
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Convert"
+                    android:onClick="activar_flash"
+                />
+
+            </LinearLayout>
         </TableRow>
         <TableRow
             android:gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
 
             >
 
@@ -122,66 +152,86 @@
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_play"
-                    android:layout_width="50dp"
+                    android:layout_width="48dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
+                    android:src="@drawable/play"
                     android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingRight="5dp"
                     android:paddingLeft="5dp"
-                    android:layout_gravity="center"
+                    android:paddingRight="5dp"
+                    android:paddingTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/white"
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_pause"
-                    android:layout_width="50dp"
+                    android:layout_width="48dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
+                    android:src="@drawable/pause"
                     android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingRight="5dp"
                     android:paddingLeft="5dp"
-                    android:layout_gravity="center"
+                    android:paddingRight="5dp"
+                    android:paddingTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/white"
+
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_stop"
-                    android:layout_width="50dp"
+                    android:layout_width="48dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
+                    android:src="@drawable/stop"
                     android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingRight="5dp"
                     android:paddingLeft="5dp"
-                    android:layout_gravity="center"
+                    android:paddingRight="5dp"
+                    android:paddingTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/white"
+
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_loop"
-                    android:layout_width="50dp"
+                    android:layout_width="48dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
-                    android:paddingBottom="20dp"
-                    android:paddingRight="5dp"
+                    android:src="@drawable/loop"
+                    android:paddingBottom="10dp"
                     android:paddingLeft="5dp"
-                    android:layout_gravity="center"
+                    android:paddingRight="5dp"
+                    android:paddingTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/white"
+
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_download"
-                    android:layout_width="50dp"
+                    android:layout_width="48dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
+                    android:src="@drawable/download"
                     android:paddingBottom="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingRight="5dp"
                     android:paddingLeft="5dp"
-                    android:layout_gravity="center"
+                    android:paddingRight="5dp"
+                    android:paddingTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/white"
+
                     />
 
             </LinearLayout>
@@ -191,6 +241,7 @@
             android:layout_marginTop="10dp"
 
             >
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -198,8 +249,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Publicidad"
                 android:textAllCaps="true"
-                android:textSize="15sp"
-                />
+                android:textSize="15sp" />
         </TableRow>
     </TableLayout>
 
