@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Morse {
 
-    Map<String, String> morse_map = new HashMap<String, String>();
+    private Map<String, String> morse_map = new HashMap<String, String>();
 
     public Morse (){
         morse_map.put("a",".-");
@@ -86,15 +86,33 @@ public class Morse {
                 //Se agrega el valor
                 morse+=morse_map.get(String.valueOf(text_lowerCase.charAt(i)));
                 //Se agrega espacio
-                morse+=" ";
             }
             else{ //Sino existe se agrega el signo ?
                 morse+=morse_map.get("?");
                 //Se agrega espacio
-                morse+=" ";
+//                morse+=" ";
             }
+            morse+=" ";
+
         }
         return morse;
+    }
+
+
+    //Retorna codigo morse de un caracter
+    public String translateCharToMorse(String text){
+        String morse="";
+        String text_lowerCase = text.toLowerCase();
+
+            //Se comprueba que exista el caracter
+            if(morse_map.containsKey(text)){
+                //Se agrega el valor
+                return morse_map.get(text);
+
+            }
+            else{ //Sino existe se agrega el signo ?
+                return morse_map.get("?");
+            }
     }
 
 }

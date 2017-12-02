@@ -11,7 +11,7 @@
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:stretchColumns="0"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
@@ -22,8 +22,8 @@
             >
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="70dp"
+                android:layout_marginBottom="20dp"
                 android:text="Publicidad"
                 android:textAllCaps="true"
                 android:textSize="15sp"
@@ -34,7 +34,7 @@
             >
 
             <com.kyleduo.switchbutton.SwitchButton
-                android:id="@+id/sb_use_listener"
+                android:id="@+id/sb_output"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="right"
@@ -48,42 +48,35 @@
 
                 />
         </TableRow>
+
         <TableRow
             android:gravity="center_horizontal"
             >
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                android:text="@string/title_edit_text_text"
+                android:textAllCaps="true"
+                android:textSize="15sp"
+                />
 
-                >
+        </TableRow>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/title_edit_text_text"
-                    android:textAllCaps="true"
-                    android:textSize="15sp"
-                   />
-
+        <TableRow
+            android:gravity="center_horizontal"
+            >
                 <EditText
                     android:id="@+id/et_text"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="70dp"
-                    android:inputType="text" />
-
-            </LinearLayout>
-
+                    android:inputType="text"
+                    />
         </TableRow>
         <TableRow
             android:gravity="center_horizontal"
             >
-
-
-                <Button
+            <Button
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Convert"
@@ -93,37 +86,28 @@
 
         </TableRow>
 
-
+        <TableRow
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/title_edit_text_morse"
+                android:textAllCaps="true"
+                android:textSize="15sp" />
+        </TableRow>
 
         <TableRow
             android:gravity="center_horizontal"
             >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/title_edit_text_morse"
-                    android:textAllCaps="true"
-                    android:textSize="15sp" />
-
                 <EditText
                     android:id="@+id/et_morse"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:inputType="text"
-                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:inputType="none"
                     android:enabled="false"
                     />
-
-            </LinearLayout>
-
         </TableRow>
         <TableRow
             android:gravity="center_horizontal"
@@ -141,13 +125,13 @@
         </TableRow>
         <TableRow
             android:gravity="center_horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
 
             >
 
             <LinearLayout
                 android:id="@+id/linearLayoutMainMenu"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:orientation="horizontal"
                 android:background="#ffffff"
@@ -157,7 +141,7 @@
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_play"
                     android:layout_width="48dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
@@ -168,12 +152,13 @@
                     android:paddingTop="10dp"
                     android:scaleType="fitCenter"
                     android:background="@android:color/white"
+                    android:onClick="onClick_Play_Control"
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_pause"
                     android:layout_width="48dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
@@ -184,13 +169,14 @@
                     android:paddingTop="10dp"
                     android:scaleType="fitCenter"
                     android:background="@android:color/white"
+                    android:onClick="onClick_Pause_Control"
 
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_stop"
                     android:layout_width="48dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
@@ -201,13 +187,14 @@
                     android:paddingTop="10dp"
                     android:scaleType="fitCenter"
                     android:background="@android:color/white"
+                    android:onClick="onClick_Stop_Control"
 
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_loop"
                     android:layout_width="48dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
@@ -218,13 +205,14 @@
                     android:paddingTop="10dp"
                     android:scaleType="fitCenter"
                     android:background="@android:color/white"
+                    android:onClick="onClick_Loop_Control"
 
                     />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_download"
                     android:layout_width="48dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
@@ -240,21 +228,7 @@
 
             </LinearLayout>
         </TableRow>
-        <TableRow
-            android:gravity="center_horizontal"
-            android:layout_marginTop="10dp"
 
-            >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="20dp"
-                android:text="Publicidad"
-                android:textAllCaps="true"
-                android:textSize="15sp" />
-        </TableRow>
     </TableLayout>
 
 
