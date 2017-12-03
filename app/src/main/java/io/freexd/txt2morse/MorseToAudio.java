@@ -135,6 +135,8 @@ public class MorseToAudio implements Runnable {
                 sleep(delay_short_gap);
 
             }
+            short_tone.release();
+            long_tone.release();
         }catch (Exception e){
             e.printStackTrace();
         }
