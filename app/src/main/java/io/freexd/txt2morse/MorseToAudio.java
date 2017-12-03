@@ -3,6 +3,9 @@ package io.freexd.txt2morse;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -23,8 +26,13 @@ public class MorseToAudio implements Runnable {
 
     String TAG = "MorseToFlashlight";
     boolean sound_on;
-    MediaPlayer short_sound_player;
-    MediaPlayer long_sound_player;
+    /*MediaPlayer short_sound_player;
+    MediaPlayer long_sound_player;*/
+
+    AudioTrack short_tone;
+    AudioTrack long_tone;
+
+    int frequency = 600;
 
     private List<MorseItem> list_morse_translate;
     private volatile boolean loop;
@@ -44,13 +52,16 @@ public class MorseToAudio implements Runnable {
      */
 
     public MorseToAudio(Context context){
-        this.context = context;
         try {
-            int res_id_short = context.getResources().getIdentifier("short_audio", "raw", context.getPackageName());
-            short_sound_player = MediaPlayer.create(context,res_id_short);
+            this.context = context;
 
-            int res_id_long = context.getResources().getIdentifier("long_audio", "raw", context.getPackageName());
-            long_sound_player = MediaPlayer.create(context,res_id_long);
+            //Delay time for each element
+            delay_dot=delay_unit;
+            delay_hyphen=delay_unit*3;
+            delay_inter_gap=delay_unit;
+            delay_short_gap=delay_unit*3;
+            delay_medium_gap=delay_unit*7;
+
         } catch (IllegalArgumentException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -61,35 +72,32 @@ public class MorseToAudio implements Runnable {
 
     }
 
-    public void playShortSound(){
-        sound_on = true;
-        this.short_sound_player.start();
-        //this.short_sound_player.reset();
-        sound_on = false;
-    }
-
-    public void playLongSound(){
-        sound_on = true;
-        this.long_sound_player.start();
-        sound_on = false;
-     //   this.long_sound_player.reset();
-    }
-
-    public void releaseResources(){
-        this.long_sound_player.release();
-        this.short_sound_player.release();
+    private AudioTrack generateTone(double freqHz, int durationMs)
+    {
+        int count = (int)(44100.0 * 2.0 * (durationMs / 1000.0)) & ~1;
+        short[] samples = new short[count];
+        for(int i = 0; i < count; i += 2){
+            short sample = (short)(Math.sin(2 * Math.PI * i / (44100.0 / freqHz)) * 0x7FFF);
+            samples[i + 0] = sample;
+            samples[i + 1] = sample;
+        }
+        AudioTrack track = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
+                AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT,
+                count * (Short.SIZE / 8), AudioTrack.MODE_STATIC);
+        track.write(samples, 0, count);
+        return track;
     }
 
     public boolean morseToAudioCheck(final List<MorseItem> list_morse_translate, int position){
 
         start_position=position;
         //Se verifica si se logro abrir archivo de audio en el telefono
-        if(this.short_sound_player!=null && this.long_sound_player!=null){
+  //      if(this.short_sound_player!=null && this.long_sound_player!=null){
             this.list_morse_translate=list_morse_translate;
             Log.d(TAG,"Entro a check morseToFlashLightCheck");
             return true;
-        }
-        return false;
+      //  }
+    //    return false;
     }
 
     public void morseToAudioGO(int init_position){
@@ -103,11 +111,13 @@ public class MorseToAudio implements Runnable {
                 for (int j = 0; j < list_morse_translate.get(i).getMorse().length(); j++) {
                     switch (list_morse_translate.get(i).getMorse().charAt(j)) {
                         case '.':
-                            playShortSound();
+                            short_tone = generateTone(frequency , delay_dot);
+                            short_tone.play();
                             sleep(delay_dot);
                             break;
                         case '-':
-                            playLongSound();
+                            long_tone = generateTone(frequency , delay_hyphen);
+                            long_tone.play();
                             sleep(delay_hyphen);
                             break;
                         case ' ':
