@@ -3,12 +3,13 @@ package io.freexd.txt2morse;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.os.Handler;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,13 +26,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     String TAG = "MainActivity";
+    public static final String PREFS_NAME = "T2morse";
     Thread threadFlashLight;
+    Thread threadAudio;
     MorseToFlashlight morseToFlashlightObj;
-    Morse morseOjb;
+    MorseToAudio morseToAudioObj;
+    MorseUtil morseOjb;
     EditText et_text;
     EditText et_morse;
     SwitchButton sb_output;
-
 
     boolean loop_on=false;
     int output = 0; // 0 -> SOUND, 1 -> FLASHLIGHT
@@ -39,10 +42,6 @@ public class MainActivity extends AppCompatActivity {
     int position = 0;
     private List<MorseItem> list_morse_translate;
 
-
-   /* public static int position_text_original = 0;
-    public static int position_text_morse_begin = 0;
-    public static int position_text_morse_end = 0;*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +52,12 @@ public class MainActivity extends AppCompatActivity {
         threadFlashLight = new Thread(morseToFlashlightObj);
         threadFlashLight.start();
 
-        morseOjb = new Morse();
+        morseToAudioObj = new MorseToAudio(getApplicationContext());
+        threadAudio = new Thread(morseToAudioObj);
+        threadAudio.start();
+
+
+        morseOjb = new MorseUtil();
         list_morse_translate = new ArrayList<MorseItem>();
 
 
@@ -74,8 +78,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+        String saved_text = prefs.getString("et_text", "");
+        String saved_morse = prefs.getString("et_morse", "");
 
+        et_text.setText(saved_text);
+        et_morse.setText(saved_morse);
 
+        //Se convierte lo que este previamente guardado
+
+        //onClick_Convert_Text_to_Morse(null);
+        Button click_convert = (Button) findViewById(R.id.btn_convert);
+        click_convert.performClick();
     }
 
     public void onClick_Convert_Text_to_Morse(View v){
@@ -107,6 +121,13 @@ public class MainActivity extends AppCompatActivity {
 
         et_morse.setText(result);
         position = 0;
+
+        //Se guarda info de texto en el dispositivo
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("et_text", et_text.getText().toString());
+        editor.putString("et_morse", et_morse.getText().toString());
+        editor.commit();
     }
 
     public void onClick_Copy_Morse_to_Clipboard(View v) {
@@ -119,23 +140,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick_Play_Control(View v){
-        //Flashlight
-        if(output==1){
-           // Log.d(TAG, "entro a play control= "+morseToFlashlightObj.running_thread_morseToFlashLight());
-            try {
-                if (!threadFlashLight.isAlive()) {
-                    if (morseToFlashlightObj.morseToFlashLightCheck(list_morse_translate,position)) {
-                        threadFlashLight = new Thread(morseToFlashlightObj);
-                        threadFlashLight.start();
+        try {
+            //Log.d(TAG, "position actual = "+position);
+            //Log.d(TAG, "tama#o text= "+et_text.getText().toString().length());
+            if((position+1)>=(et_text.getText().toString().length())) position = 0;
+            //Flashlight
+            if(output==1){
+               // Log.d(TAG, "entro a play control= "+morseToFlashlightObj.running_thread_morseToFlashLight());
+
+                    if (!threadFlashLight.isAlive()) {
+                        if (morseToFlashlightObj.morseToFlashLightCheck(list_morse_translate,position)) {
+                            threadFlashLight = new Thread(morseToFlashlightObj);
+                            threadFlashLight.start();
+                        }
+                    }
+
+
+            }
+            else{ //Sound
+                if (!threadAudio.isAlive()) {
+                    if (morseToAudioObj.morseToAudioCheck(list_morse_translate,position)) {
+                        threadAudio = new Thread(morseToAudioObj);
+                        threadAudio.start();
                     }
                 }
-            }catch (Exception e){
-                Log.d(TAG, e.getMessage());
             }
-
-        }
-        else{ //Sound
-
+        }catch (Exception e){
+            Log.d(TAG, e.getMessage());
         }
     }
     public void onClick_Pause_Control(View v){
@@ -151,7 +182,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else{ //Sound
-
+            if (threadAudio.isAlive()) {
+                morseToAudioObj.disable_loop();
+                //morseToAudioObj.turnOff();
+                threadAudio.interrupt();
+                if(loop_on){
+                    morseToAudioObj.enable_loop();
+                }
+            }
         }
     }
 
@@ -166,13 +204,20 @@ public class MainActivity extends AppCompatActivity {
                         morseToFlashlightObj.enable_loop();
                     }
                 }
-            position = 0;
-            et_text.setSelection(0,1);
-
         }
         else{ //Sound
-
+            if (threadAudio.isAlive()) {
+                morseToAudioObj.disable_loop();
+                //morseToAudioObj.turnOff();
+                threadAudio.interrupt();
+                if(loop_on){
+                    morseToAudioObj.enable_loop();
+                }
+            }
         }
+        position = 0;
+        et_text.setSelection(0,1);
+
     }
 
     public void onClick_Loop_Control(View v){
@@ -195,6 +240,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else{ //Sound
+            if (!threadAudio.isAlive()) {
+
+                if(morseToAudioObj.getLoop()){
+                    morseToAudioObj.disable_loop();
+                    Toast.makeText(getApplicationContext(),"Loop disabled",Toast.LENGTH_SHORT).show();
+                    loop_on = false;
+                }
+                else{
+                    morseToAudioObj.enable_loop();
+                    Toast.makeText(getApplicationContext(),"Loop enabled",Toast.LENGTH_SHORT).show();
+                    loop_on = true;
+                }
+            }
 
         }
     }
@@ -208,16 +266,11 @@ public class MainActivity extends AppCompatActivity {
         et_text.requestFocus();
         et_text.setSelection(event.position_text_original,event.position_text_original+1);
 
-       /* Thread.sleep(200);
-
-        et_morse.requestFocus();
-        et_morse.setSelection(event.position_text_morse_begin, event.position_text_morse_end);
-        et_morse.clearFocus();*/
         Log.d(TAG, "Posicion actual en morse = "+event.position_text_morse_begin);
 
         if(!event.morse.equals("|"))
             Toast.makeText(getApplicationContext(),event.text.toUpperCase() +" = "+ event.morse,Toast.LENGTH_SHORT).show();
-    };
+    }
 
     @Override
     public void onStart() {

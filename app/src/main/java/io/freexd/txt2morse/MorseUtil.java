@@ -7,11 +7,11 @@ import java.util.Map;
  * Created by carlos on 11/25/17.
  */
 
-public class Morse {
+public class MorseUtil {
 
     private Map<String, String> morse_map = new HashMap<String, String>();
 
-    public Morse (){
+    public MorseUtil(){
         morse_map.put("a",".-");
         morse_map.put("b","-...");
         morse_map.put("c","-.-.");
