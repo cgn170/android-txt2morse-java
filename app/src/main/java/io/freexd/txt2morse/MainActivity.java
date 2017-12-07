@@ -14,6 +14,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.greenrobot.eventbus.EventBus;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private AdView mAdView;
 
     String TAG = "MainActivity";
     public static final String PREFS_NAME = "T2morse";
@@ -65,8 +70,15 @@ public class MainActivity extends AppCompatActivity {
         et_morse = (EditText) findViewById(R.id.et_morse);
         sb_output = (SwitchButton) findViewById(R.id.sb_output);
 
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+        String saved_text = prefs.getString("et_text", "");
+        String saved_morse = prefs.getString("et_morse", "");
+        int saved_output = prefs.getInt("ouput", 0);
+
+
         sb_output.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if(isChecked){
                     output = 1; //flashlight activated
                   //  Toast.makeText(getApplicationContext(),"FlashLight activated",Toast.LENGTH_SHORT).show();
@@ -75,12 +87,16 @@ public class MainActivity extends AppCompatActivity {
                     output = 0; //sound activated
                     //Toast.makeText(getApplicationContext(),"Sound activated!",Toast.LENGTH_SHORT).show();
                 }
+
+                SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("output", output);
+                editor.commit();
             }
         });
 
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
-        String saved_text = prefs.getString("et_text", "");
-        String saved_morse = prefs.getString("et_morse", "");
+        sb_output.setChecked(false);
+        if(saved_output==1)  sb_output.setChecked(true);
 
         et_text.setText(saved_text);
         et_morse.setText(saved_morse);
@@ -90,9 +106,24 @@ public class MainActivity extends AppCompatActivity {
         //onClick_Convert_Text_to_Morse(null);
         Button click_convert = (Button) findViewById(R.id.btn_convert);
         click_convert.performClick();
+
+
+        //Se inicializa el banner
+
+      //  MobileAds.initialize(this, "ca-app-pub-7610777618304000~5667345644");
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544/5224354917");
+
+        mAdView = findViewById(R.id.adView);
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
+
     }
 
     public void onClick_Convert_Text_to_Morse(View v){
+        list_morse_translate.clear();
 
         //Se oculta soft keyboar
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -118,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             result=result+list_morse_translate.get(list_morse_translate.size()-1).getMorse()+" ";
         }
 
-
         et_morse.setText(result);
         position = 0;
 
@@ -128,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("et_text", et_text.getText().toString());
         editor.putString("et_morse", et_morse.getText().toString());
         editor.commit();
+        Toast.makeText(getApplicationContext(),"Morse generated!",Toast.LENGTH_SHORT).show();
+
     }
 
     public void onClick_Copy_Morse_to_Clipboard(View v) {
@@ -195,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick_Stop_Control(View v){
         //Flashlight
-        if(output==1){
+        //if(output==1){
             if (threadFlashLight.isAlive()) {
                     morseToFlashlightObj.disable_loop();
                     morseToFlashlightObj.turnOff();
@@ -204,8 +236,8 @@ public class MainActivity extends AppCompatActivity {
                         morseToFlashlightObj.enable_loop();
                     }
                 }
-        }
-        else{ //Sound
+        //}
+        //else{ //Sound
             if (threadAudio.isAlive()) {
                 morseToAudioObj.disable_loop();
                 //morseToAudioObj.turnOff();
@@ -214,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                     morseToAudioObj.enable_loop();
                 }
             }
-        }
+        //}
         position = 0;
         et_text.setSelection(0,1);
 
@@ -282,6 +314,30 @@ public class MainActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 
 

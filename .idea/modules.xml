@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Txt2Morse.iml" filepath="$PROJECT_DIR$/Txt2Morse.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/txt2morse.iml" filepath="$PROJECT_DIR$/txt2morse.iml" />
     </modules>
   </component>
 </project>
