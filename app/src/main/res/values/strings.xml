@@ -2,4 +2,7 @@
     <string name="app_name">Txt2Morse</string>
     <string name="title_edit_text_morse">Morse</string>
     <string name="title_edit_text_text">Text</string>
+    <string name="convert_btn">Translate</string>
+    <string name="copy_btn">Copy</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

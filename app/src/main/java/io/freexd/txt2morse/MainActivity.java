@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -47,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
     int position = 0;
     private List<MorseItem> list_morse_translate;
 
+    ImageButton bt_loop;
+    ImageButton bt_play;
+    ImageButton bt_pause;
+    ImageButton bt_stop;
+
+    ImageView icon_audio;
+    ImageView icon_light;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +81,13 @@ public class MainActivity extends AppCompatActivity {
         et_morse = (EditText) findViewById(R.id.et_morse);
         sb_output = (SwitchButton) findViewById(R.id.sb_output);
 
+        icon_audio = (ImageView) findViewById(R.id.icon_audio);
+        icon_light = (ImageView) findViewById(R.id.icon_light);
+
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
         String saved_text = prefs.getString("et_text", "");
         String saved_morse = prefs.getString("et_morse", "");
-        int saved_output = prefs.getInt("ouput", 0);
+        int saved_output = prefs.getInt("output", 0);
 
 
         sb_output.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -82,10 +96,15 @@ public class MainActivity extends AppCompatActivity {
                 if(isChecked){
                     output = 1; //flashlight activated
                   //  Toast.makeText(getApplicationContext(),"FlashLight activated",Toast.LENGTH_SHORT).show();
+                    icon_light.setBackgroundColor(Color.CYAN);
+                    icon_audio.setBackgroundColor(Color.TRANSPARENT);
+
                 }
                 else {
                     output = 0; //sound activated
                     //Toast.makeText(getApplicationContext(),"Sound activated!",Toast.LENGTH_SHORT).show();
+                    icon_light.setBackgroundColor(Color.TRANSPARENT);
+                    icon_audio.setBackgroundColor(Color.CYAN);
                 }
 
                 SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -95,8 +114,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sb_output.setChecked(false);
-        if(saved_output==1)  sb_output.setChecked(true);
+        if(saved_output==1)  {
+            sb_output.setChecked(true);
+            icon_light.setBackgroundColor(Color.CYAN);
+
+        }
+        else{
+            sb_output.setChecked(false);
+            icon_audio.setBackgroundColor(Color.CYAN);
+
+        }
 
         et_text.setText(saved_text);
         et_morse.setText(saved_morse);
@@ -111,7 +138,12 @@ public class MainActivity extends AppCompatActivity {
         //Se inicializa el banner
 
       //  MobileAds.initialize(this, "ca-app-pub-7610777618304000~5667345644");
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544/5224354917");
+
+       // AdView banner = (AdView) findViewById(R.id.adView);
+
+        //MobileAds.initialize(this, "ca-app-pub-3940256099942544/5224354917");
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+
 
         mAdView = findViewById(R.id.adView);
         //AdRequest adRequest = new AdRequest.Builder().build();
@@ -119,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
         mAdView.loadAd(adRequest);
+
+        bt_loop = (ImageButton) findViewById(R.id.bt_menu_reproducir_loop);
+        bt_play = (ImageButton) findViewById(R.id.bt_menu_reproducir_play);
+        bt_pause = (ImageButton) findViewById(R.id.bt_menu_reproducir_pause);
+        bt_stop = (ImageButton) findViewById(R.id.bt_menu_reproducir_stop);
 
     }
 
@@ -133,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
 
         String result = "";
         String text_lowerCase = et_text.getText().toString().toLowerCase();
+        if(text_lowerCase.length()==0) return;
+
         String character_text = "";
         String character_morse = "";
         int morse_count=0;
@@ -175,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             //Log.d(TAG, "position actual = "+position);
             //Log.d(TAG, "tama#o text= "+et_text.getText().toString().length());
+            if(et_text.getText().toString().length()==0) return;
             if((position+1)>=(et_text.getText().toString().length())) position = 0;
             //Flashlight
             if(output==1){
@@ -184,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
                         if (morseToFlashlightObj.morseToFlashLightCheck(list_morse_translate,position)) {
                             threadFlashLight = new Thread(morseToFlashlightObj);
                             threadFlashLight.start();
+                            bt_pause.setBackgroundColor(Color.WHITE);
+                            bt_play.setBackgroundColor(Color.CYAN);
                         }
                     }
 
@@ -194,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
                     if (morseToAudioObj.morseToAudioCheck(list_morse_translate,position)) {
                         threadAudio = new Thread(morseToAudioObj);
                         threadAudio.start();
+                        bt_pause.setBackgroundColor(Color.WHITE);
+                        bt_play.setBackgroundColor(Color.CYAN);
                     }
                 }
             }
@@ -211,6 +255,9 @@ public class MainActivity extends AppCompatActivity {
                 if(loop_on){
                     morseToFlashlightObj.enable_loop();
                 }
+                bt_play.setBackgroundColor(Color.WHITE);
+                bt_pause.setBackgroundColor(Color.CYAN);
+
             }
         }
         else{ //Sound
@@ -221,6 +268,9 @@ public class MainActivity extends AppCompatActivity {
                 if(loop_on){
                     morseToAudioObj.enable_loop();
                 }
+                bt_play.setBackgroundColor(Color.WHITE);
+                bt_pause.setBackgroundColor(Color.CYAN);
+
             }
         }
     }
@@ -228,7 +278,8 @@ public class MainActivity extends AppCompatActivity {
     public void onClick_Stop_Control(View v){
         //Flashlight
         //if(output==1){
-            if (threadFlashLight.isAlive()) {
+        bt_stop.setBackgroundColor(Color.CYAN);
+        if (threadFlashLight.isAlive()) {
                     morseToFlashlightObj.disable_loop();
                     morseToFlashlightObj.turnOff();
                     threadFlashLight.interrupt();
@@ -249,6 +300,10 @@ public class MainActivity extends AppCompatActivity {
         //}
         position = 0;
         et_text.setSelection(0,1);
+        bt_stop.setBackgroundColor(Color.WHITE);
+        bt_play.setBackgroundColor(Color.WHITE);
+        bt_pause.setBackgroundColor(Color.WHITE);
+
 
     }
 
@@ -260,13 +315,19 @@ public class MainActivity extends AppCompatActivity {
 
                 if(morseToFlashlightObj.getLoop()){
                     morseToFlashlightObj.disable_loop();
-                    Toast.makeText(getApplicationContext(),"Loop disabled",Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getApplicationContext(),"Loop disabled",Toast.LENGTH_SHORT).show();
                     loop_on = false;
+
+                    //Cambia boton de loop a inactivo
+                    bt_loop.setBackgroundColor(Color.WHITE);
+
                 }
                 else{
                     morseToFlashlightObj.enable_loop();
-                    Toast.makeText(getApplicationContext(),"Loop enabled",Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),"Loop enabled",Toast.LENGTH_SHORT).show();
                     loop_on = true;
+                    //Cambia boton de loop a activo
+                    bt_loop.setBackgroundColor(Color.CYAN);
 
                 }
             }
@@ -278,11 +339,17 @@ public class MainActivity extends AppCompatActivity {
                     morseToAudioObj.disable_loop();
                     Toast.makeText(getApplicationContext(),"Loop disabled",Toast.LENGTH_SHORT).show();
                     loop_on = false;
+                    //Cambia boton de loop a inactivo
+                    bt_loop.setBackgroundColor(Color.WHITE);
+
                 }
                 else{
                     morseToAudioObj.enable_loop();
                     Toast.makeText(getApplicationContext(),"Loop enabled",Toast.LENGTH_SHORT).show();
                     loop_on = true;
+                    //Cambia boton de loop a activo
+                    bt_loop.setBackgroundColor(Color.CYAN);
+
                 }
             }
 
@@ -302,6 +369,10 @@ public class MainActivity extends AppCompatActivity {
 
         if(!event.morse.equals("|"))
             Toast.makeText(getApplicationContext(),event.text.toUpperCase() +" = "+ event.morse,Toast.LENGTH_SHORT).show();
+
+        //Se verifica cuando llegue al final
+        if(position==(et_text.getText().length()-1))
+            bt_play.setBackgroundColor(Color.WHITE);
     }
 
     @Override
