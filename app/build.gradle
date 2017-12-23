@@ -29,7 +29,7 @@ dependencies {
     compile 'com.kyleduo.switchbutton:library:2.0.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.google.android.gms:play-services-ads:11.6.2'
-
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 
 
 }

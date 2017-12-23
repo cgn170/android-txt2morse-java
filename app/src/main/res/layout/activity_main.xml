@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="io.freexd.txt2morse.MainActivity"
+    android:background="@android:color/white"
 
     >
     <com.google.android.gms.ads.AdView
@@ -19,7 +20,7 @@
 
     <TableLayout
         android:id="@+id/tableLayout"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:stretchColumns="0"
         android:layout_marginRight="15dp"
@@ -44,6 +45,8 @@
                     android:layout_marginRight="8dp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="8dp"
+
+
                     />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -57,7 +60,8 @@
                     app:kswTextOn="   Flashlight   "
                     app:kswThumbHeight="32dp"
                     app:kswThumbWidth="32dp"
-
+                    app:kswThumbColor="@color/colorAccent"
+                    app:kswBackColor="@color/switchButtonBackground"
                     />
                 <ImageView
                     android:id="@+id/icon_light"
@@ -67,7 +71,9 @@
                     android:src="@drawable/electric_light_bulb_icon"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="10dp" />
+                    android:layout_marginStart="10dp"
+
+                    />
 
 
             </LinearLayout>
@@ -85,19 +91,23 @@
                 android:text="@string/title_edit_text_text"
                 android:textAllCaps="true"
                 android:textSize="15sp"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 />
 
         </TableRow>
 
         <TableRow
             android:gravity="center_horizontal"
+
             >
             <EditText
                 android:id="@+id/et_text"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="55dp"
                 android:inputType="text"
+                android:textColor="@android:color/black"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:textColorHighlight="@color/textEditColorHighlight"
                 />
         </TableRow>
         <TableRow
@@ -110,6 +120,8 @@
                 android:text="@string/convert_btn"
                 android:onClick="onClick_Convert_Text_to_Morse"
                 android:textColor="@android:color/white"
+                android:background="@drawable/button_selector"
+
                 />
 
         </TableRow>
@@ -125,7 +137,7 @@
                 android:text="@string/title_edit_text_morse"
                 android:textAllCaps="true"
                 android:textSize="15sp"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 />
         </TableRow>
 
@@ -135,9 +147,14 @@
             <EditText
                 android:id="@+id/et_morse"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="65dp"
                 android:inputType="none"
-                android:enabled="false"
+                android:textColor="@android:color/black"
+                android:scrollbars="vertical"
+                android:enabled="true"
+                android:focusableInTouchMode="false"
+
+                android:backgroundTint="@android:color/holo_red_light"
                 />
         </TableRow>
         <TableRow
@@ -151,6 +168,8 @@
                 android:text="@string/copy_btn"
                 android:onClick="onClick_Copy_Morse_to_Clipboard"
                 android:textColor="@android:color/white"
+                android:background="@drawable/button_selector"
+
                 />
 
         </TableRow>
@@ -162,62 +181,61 @@
 
             <LinearLayout
                 android:id="@+id/linearLayoutMainMenu"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@id/tableLayout"
                 android:layout_height="48dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
+
                 >
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_play"
-                    android:layout_width="48dp"
+                    android:layout_width="0px"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
 
-                    android:background="@android:color/white"
+                    android:background="@drawable/background_menu_principal_selector"
                     android:onClick="onClick_Play_Control"
 
                     android:scaleType="fitCenter"
                     android:src="@drawable/play"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:tint="@drawable/tint_menu_principal_selector"
+
+
+                    />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_pause"
-                    android:layout_width="48dp"
+                    android:layout_width="0px"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
 
-                    android:background="@android:color/white"
+                    android:background="@drawable/background_menu_principal_selector"
                     android:onClick="onClick_Pause_Control"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/pause" />
+                    android:src="@drawable/pause"
+                    android:tint="@drawable/tint_menu_principal_selector"
+
+                    />
 
                 <ImageButton
                     android:id="@+id/bt_menu_reproducir_stop"
-                    android:layout_width="48dp"
+                    android:layout_width="0px"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
 
-                    android:background="@android:color/white"
+                    android:background="@drawable/background_menu_principal_selector"
                     android:onClick="onClick_Stop_Control"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/stop" />
-
-                <ImageButton
-                    android:id="@+id/bt_menu_reproducir_loop"
-                    android:layout_width="48dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-
-                    android:background="@android:color/white"
-                    android:onClick="onClick_Loop_Control"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/loop"
-                    android:padding="8dp"
+                    android:src="@drawable/stop"
+                    android:tint="@drawable/tint_menu_principal_selector"
 
                     />
 

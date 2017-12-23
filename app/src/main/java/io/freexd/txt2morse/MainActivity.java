@@ -84,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
         icon_audio = (ImageView) findViewById(R.id.icon_audio);
         icon_light = (ImageView) findViewById(R.id.icon_light);
 
+       /* et_morse.setEnabled(false);
+        et_morse.setKeyListener( null );
+        et_morse.setFocusable( false );
+        et_morse.setCursorVisible(false);
+*/
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
         String saved_text = prefs.getString("et_text", "");
         String saved_morse = prefs.getString("et_morse", "");
@@ -96,15 +101,29 @@ public class MainActivity extends AppCompatActivity {
                 if(isChecked){
                     output = 1; //flashlight activated
                   //  Toast.makeText(getApplicationContext(),"FlashLight activated",Toast.LENGTH_SHORT).show();
-                    icon_light.setBackgroundColor(Color.CYAN);
-                    icon_audio.setBackgroundColor(Color.TRANSPARENT);
+                   // icon_light.setBackgroundColor(Color.CYAN);
+                   // icon_audio.setBackgroundColor(Color.TRANSPARENT);
+
+                    //icon_light.setColorFilter(Color.green(100));
+
+                    icon_light.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
+
+                    icon_audio.clearColorFilter();
+
+
 
                 }
                 else {
                     output = 0; //sound activated
                     //Toast.makeText(getApplicationContext(),"Sound activated!",Toast.LENGTH_SHORT).show();
-                    icon_light.setBackgroundColor(Color.TRANSPARENT);
-                    icon_audio.setBackgroundColor(Color.CYAN);
+                 //   icon_light.setBackgroundColor(Color.TRANSPARENT);
+                   // icon_audio.setBackgroundColor(Color.CYAN);
+
+
+                   // icon_audio.setColorFilter(Color.green(100));
+                    icon_audio.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
+
+                    icon_light.clearColorFilter();
                 }
 
                 SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -116,12 +135,17 @@ public class MainActivity extends AppCompatActivity {
 
         if(saved_output==1)  {
             sb_output.setChecked(true);
-            icon_light.setBackgroundColor(Color.CYAN);
+           // icon_light.setBackgroundColor(Color.CYAN);
+           // icon_light.setColorFilter(Color.green(100));
+            icon_light.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
+
 
         }
         else{
             sb_output.setChecked(false);
-            icon_audio.setBackgroundColor(Color.CYAN);
+           // icon_audio.setBackgroundColor(Color.CYAN);
+            //icon_audio.setColorFilter(Color.green(100));
+            icon_audio.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
         }
 
@@ -152,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mAdView.loadAd(adRequest);
 
-        bt_loop = (ImageButton) findViewById(R.id.bt_menu_reproducir_loop);
+      //  bt_loop = (ImageButton) findViewById(R.id.bt_menu_reproducir_loop);
         bt_play = (ImageButton) findViewById(R.id.bt_menu_reproducir_play);
         bt_pause = (ImageButton) findViewById(R.id.bt_menu_reproducir_pause);
         bt_stop = (ImageButton) findViewById(R.id.bt_menu_reproducir_stop);
@@ -224,8 +248,11 @@ public class MainActivity extends AppCompatActivity {
                         if (morseToFlashlightObj.morseToFlashLightCheck(list_morse_translate,position)) {
                             threadFlashLight = new Thread(morseToFlashlightObj);
                             threadFlashLight.start();
-                            bt_pause.setBackgroundColor(Color.WHITE);
-                            bt_play.setBackgroundColor(Color.CYAN);
+                            bt_pause.setColorFilter(Color.BLACK);
+                            bt_play.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
+
+                            //bt_pause.setBackgroundColor(Color.WHITE);
+                           // bt_play.setBackgroundColor(Color.CYAN);
                         }
                     }
 
@@ -236,8 +263,10 @@ public class MainActivity extends AppCompatActivity {
                     if (morseToAudioObj.morseToAudioCheck(list_morse_translate,position)) {
                         threadAudio = new Thread(morseToAudioObj);
                         threadAudio.start();
-                        bt_pause.setBackgroundColor(Color.WHITE);
-                        bt_play.setBackgroundColor(Color.CYAN);
+                       // bt_pause.setBackgroundColor(Color.WHITE);
+                        //bt_play.setBackgroundColor(Color.CYAN);
+                        bt_pause.setColorFilter(Color.BLACK);
+                        bt_play.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
                     }
                 }
             }
@@ -255,8 +284,10 @@ public class MainActivity extends AppCompatActivity {
                 if(loop_on){
                     morseToFlashlightObj.enable_loop();
                 }
-                bt_play.setBackgroundColor(Color.WHITE);
-                bt_pause.setBackgroundColor(Color.CYAN);
+              //  bt_play.setBackgroundColor(Color.WHITE);
+               // bt_pause.setBackgroundColor(Color.CYAN);
+                bt_play.setColorFilter(Color.BLACK);
+                bt_pause.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
             }
         }
@@ -268,8 +299,10 @@ public class MainActivity extends AppCompatActivity {
                 if(loop_on){
                     morseToAudioObj.enable_loop();
                 }
-                bt_play.setBackgroundColor(Color.WHITE);
-                bt_pause.setBackgroundColor(Color.CYAN);
+                //bt_play.setBackgroundColor(Color.WHITE);
+                //bt_pause.setBackgroundColor(Color.CYAN);
+                bt_play.setColorFilter(Color.BLACK);
+                bt_pause.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
             }
         }
@@ -278,7 +311,8 @@ public class MainActivity extends AppCompatActivity {
     public void onClick_Stop_Control(View v){
         //Flashlight
         //if(output==1){
-        bt_stop.setBackgroundColor(Color.CYAN);
+    //    bt_stop.setBackgroundColor(Color.CYAN);
+
         if (threadFlashLight.isAlive()) {
                     morseToFlashlightObj.disable_loop();
                     morseToFlashlightObj.turnOff();
@@ -300,9 +334,11 @@ public class MainActivity extends AppCompatActivity {
         //}
         position = 0;
         et_text.setSelection(0,1);
-        bt_stop.setBackgroundColor(Color.WHITE);
-        bt_play.setBackgroundColor(Color.WHITE);
-        bt_pause.setBackgroundColor(Color.WHITE);
+        //bt_stop.setBackgroundColor(Color.WHITE);
+        //bt_play.setBackgroundColor(Color.WHITE);
+        //bt_pause.setBackgroundColor(Color.WHITE);
+        bt_play.setColorFilter(Color.BLACK);
+        bt_pause.setColorFilter(Color.BLACK);
 
 
     }
@@ -385,6 +421,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+        et_text.clearFocus();
+
     }
 
     @Override
@@ -392,6 +430,8 @@ public class MainActivity extends AppCompatActivity {
         if (mAdView != null) {
             mAdView.pause();
         }
+        et_text.clearFocus();
+
         super.onPause();
     }
 
@@ -401,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
         if (mAdView != null) {
             mAdView.resume();
         }
+        et_text.clearFocus();
     }
 
     @Override
@@ -408,6 +449,8 @@ public class MainActivity extends AppCompatActivity {
         if (mAdView != null) {
             mAdView.destroy();
         }
+        et_text.clearFocus();
+
         super.onDestroy();
     }
 
