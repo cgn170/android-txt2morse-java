@@ -1,21 +1,14 @@
 package io.freexd.txt2morse;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import static java.lang.Thread.sleep;
 
 /**
@@ -26,8 +19,6 @@ public class MorseToAudio implements Runnable {
 
     String TAG = "MorseToFlashlight";
     boolean sound_on;
-    /*MediaPlayer short_sound_player;
-    MediaPlayer long_sound_player;*/
 
     AudioTrack short_tone;
     AudioTrack long_tone;
