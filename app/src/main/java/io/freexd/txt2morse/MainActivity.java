@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if(isChecked){
+
                     output = 1; //flashlight activated
                   //  Toast.makeText(getApplicationContext(),"FlashLight activated",Toast.LENGTH_SHORT).show();
                    // icon_light.setBackgroundColor(Color.CYAN);
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
        // AdView banner = (AdView) findViewById(R.id.adView);
 
         //MobileAds.initialize(this, "ca-app-pub-3940256099942544/5224354917");
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, "ca-app-pub-7610777618304000~5667345644");
 
 
         mAdView = findViewById(R.id.adView);
@@ -184,54 +185,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick_Convert_Text_to_Morse(View v){
-        list_morse_translate.clear();
+        try {
+            list_morse_translate.clear();
 
-        //Se oculta soft keyboar
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            //Se oculta soft keyboar
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-        //String result=morseOjb.translateTextToMorse(et_text.getText().toString());
+            //String result=morseOjb.translateTextToMorse(et_text.getText().toString());
 
-        String result = "";
-        String text_lowerCase = et_text.getText().toString().toLowerCase();
-        if(text_lowerCase.length()==0) return;
+            String result = "";
+            String text_lowerCase = et_text.getText().toString().toLowerCase();
+            if (text_lowerCase.length() == 0) return;
 
-        String character_text = "";
-        String character_morse = "";
-        int morse_count=0;
-        for(int i=0;i<text_lowerCase.length();i++){
-            //Se comprueba que exista el caracter
-            character_text = String.valueOf(text_lowerCase.charAt(i));
-            list_morse_translate.add(new MorseItem(character_text,morseOjb.translateCharToMorse(character_text)));
-            //Se modifica el index;
-            list_morse_translate.get(list_morse_translate.size()-1).setText_position(i);
-            list_morse_translate.get(list_morse_translate.size()-1).setMorse_position_a(morse_count);
-            morse_count=morse_count+list_morse_translate.get(list_morse_translate.size()-1).getMorse().length()+1;
-            list_morse_translate.get(list_morse_translate.size()-1).setMorse_position_b(morse_count-1);
+            String character_text = "";
+            String character_morse = "";
+            int morse_count = 0;
+            for (int i = 0; i < text_lowerCase.length(); i++) {
+                //Se comprueba que exista el caracter
+                character_text = String.valueOf(text_lowerCase.charAt(i));
+                list_morse_translate.add(new MorseItem(character_text, morseOjb.translateCharToMorse(character_text)));
+                //Se modifica el index;
+                list_morse_translate.get(list_morse_translate.size() - 1).setText_position(i);
+                list_morse_translate.get(list_morse_translate.size() - 1).setMorse_position_a(morse_count);
+                morse_count = morse_count + list_morse_translate.get(list_morse_translate.size() - 1).getMorse().length() + 1;
+                list_morse_translate.get(list_morse_translate.size() - 1).setMorse_position_b(morse_count - 1);
 
-            result=result+list_morse_translate.get(list_morse_translate.size()-1).getMorse()+" ";
+                result = result + list_morse_translate.get(list_morse_translate.size() - 1).getMorse() + " ";
+            }
+
+            et_morse.setText(result);
+            position = 0;
+
+            //Se guarda info de texto en el dispositivo
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("et_text", et_text.getText().toString());
+            editor.putString("et_morse", et_morse.getText().toString());
+            editor.commit();
+            Toast.makeText(getApplicationContext(), "Morse generated!", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.d(TAG, e.getMessage());
+
         }
-
-        et_morse.setText(result);
-        position = 0;
-
-        //Se guarda info de texto en el dispositivo
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("et_text", et_text.getText().toString());
-        editor.putString("et_morse", et_morse.getText().toString());
-        editor.commit();
-        Toast.makeText(getApplicationContext(),"Morse generated!",Toast.LENGTH_SHORT).show();
-
     }
 
     public void onClick_Copy_Morse_to_Clipboard(View v) {
-
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Morse code", et_morse.getText().toString());
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(getApplicationContext(),"Morse code copied!",Toast.LENGTH_SHORT).show();
-
+        try {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Morse code", et_morse.getText().toString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getApplicationContext(), "Morse code copied!", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.d(TAG, e.getMessage());
+        }
     }
 
     public void onClick_Play_Control(View v){
@@ -275,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void onClick_Pause_Control(View v){
+        try{
         //Flashlight
         if(output==1){
             if (threadFlashLight.isAlive()) {
@@ -306,41 +314,47 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        }catch (Exception e){
+            Log.d(TAG, e.getMessage());
+        }
     }
 
     public void onClick_Stop_Control(View v){
         //Flashlight
         //if(output==1){
     //    bt_stop.setBackgroundColor(Color.CYAN);
-
-        if (threadFlashLight.isAlive()) {
-                    morseToFlashlightObj.disable_loop();
-                    morseToFlashlightObj.turnOff();
-                    threadFlashLight.interrupt();
-                    if(loop_on){
-                        morseToFlashlightObj.enable_loop();
-                    }
+        try {
+            if (threadFlashLight.isAlive()) {
+                morseToFlashlightObj.disable_loop();
+                morseToFlashlightObj.turnOff();
+                threadFlashLight.interrupt();
+                if (loop_on) {
+                    morseToFlashlightObj.enable_loop();
                 }
-        //}
-        //else{ //Sound
+            }
+            //}
+            //else{ //Sound
             if (threadAudio.isAlive()) {
                 morseToAudioObj.disable_loop();
                 //morseToAudioObj.turnOff();
                 threadAudio.interrupt();
-                if(loop_on){
+                if (loop_on) {
                     morseToAudioObj.enable_loop();
                 }
             }
-        //}
-        position = 0;
-        et_text.setSelection(0,1);
-        //bt_stop.setBackgroundColor(Color.WHITE);
-        //bt_play.setBackgroundColor(Color.WHITE);
-        //bt_pause.setBackgroundColor(Color.WHITE);
-        bt_play.setColorFilter(Color.BLACK);
-        bt_pause.setColorFilter(Color.BLACK);
+            //}
+            position = 0;
+            et_text.setSelection(0, 1);
+            //bt_stop.setBackgroundColor(Color.WHITE);
+            //bt_play.setBackgroundColor(Color.WHITE);
+            //bt_pause.setBackgroundColor(Color.WHITE);
+            bt_play.setColorFilter(Color.BLACK);
+            bt_pause.setColorFilter(Color.BLACK);
 
+        }catch (Exception e){
+            Log.d(TAG, e.getMessage());
 
+        }
     }
 
     public void onClick_Loop_Control(View v){
@@ -407,8 +421,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),event.text.toUpperCase() +" = "+ event.morse,Toast.LENGTH_SHORT).show();
 
         //Se verifica cuando llegue al final
-        if(position==(et_text.getText().length()-1))
-            bt_play.setBackgroundColor(Color.WHITE);
+        if(position==(et_text.getText().length()-1)) {
+            //  bt_play.setBackgroundColor(Color.WHITE);
+            bt_play.setColorFilter(Color.BLACK);
+
+        }
     }
 
     @Override

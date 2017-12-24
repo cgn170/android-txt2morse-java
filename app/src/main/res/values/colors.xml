@@ -6,5 +6,7 @@
 
     <color name="switchButtonBackground">#717787</color>
     <color name="textEditColorHighlight">#96baff</color>
+    <color name="appBackground">#dceaf2</color>
+
 
 </resources>
