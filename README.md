@@ -1,6 +1,6 @@
 # txt2morse
 
-## Java android app demo that convert text to morse Code
+## Java android app demo that convert text to morse code
 
 Translate text to morse code in 3 ways; text, sound and light (flashlight).
 
