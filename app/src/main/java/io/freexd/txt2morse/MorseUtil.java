@@ -90,7 +90,6 @@ public class MorseUtil {
             else{ //Sino existe se agrega el signo ?
                 morse+=morse_map.get("?");
                 //Se agrega espacio
-//                morse+=" ";
             }
             morse+=" ";
 
