@@ -84,11 +84,6 @@ public class MainActivity extends AppCompatActivity {
         icon_audio = (ImageView) findViewById(R.id.icon_audio);
         icon_light = (ImageView) findViewById(R.id.icon_light);
 
-       /* et_morse.setEnabled(false);
-        et_morse.setKeyListener( null );
-        et_morse.setFocusable( false );
-        et_morse.setCursorVisible(false);
-*/
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
         String saved_text = prefs.getString("et_text", "");
         String saved_morse = prefs.getString("et_morse", "");
@@ -101,11 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 if(isChecked){
 
                     output = 1; //flashlight activated
-                  //  Toast.makeText(getApplicationContext(),"FlashLight activated",Toast.LENGTH_SHORT).show();
-                   // icon_light.setBackgroundColor(Color.CYAN);
-                   // icon_audio.setBackgroundColor(Color.TRANSPARENT);
-
-                    //icon_light.setColorFilter(Color.green(100));
 
                     icon_light.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
@@ -116,12 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     output = 0; //sound activated
-                    //Toast.makeText(getApplicationContext(),"Sound activated!",Toast.LENGTH_SHORT).show();
-                 //   icon_light.setBackgroundColor(Color.TRANSPARENT);
-                   // icon_audio.setBackgroundColor(Color.CYAN);
 
-
-                   // icon_audio.setColorFilter(Color.green(100));
                     icon_audio.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
                     icon_light.clearColorFilter();
@@ -135,17 +120,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if(saved_output==1)  {
-            sb_output.setChecked(true);
-           // icon_light.setBackgroundColor(Color.CYAN);
-           // icon_light.setColorFilter(Color.green(100));
+
             icon_light.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
 
         }
         else{
             sb_output.setChecked(false);
-           // icon_audio.setBackgroundColor(Color.CYAN);
-            //icon_audio.setColorFilter(Color.green(100));
             icon_audio.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
         }
@@ -155,29 +136,21 @@ public class MainActivity extends AppCompatActivity {
 
         //Se convierte lo que este previamente guardado
 
-        //onClick_Convert_Text_to_Morse(null);
         Button click_convert = (Button) findViewById(R.id.btn_convert);
         click_convert.performClick();
 
 
         //Se inicializa el banner
 
-      //  MobileAds.initialize(this, "ca-app-pub-7610777618304000~5667345644");
-
-       // AdView banner = (AdView) findViewById(R.id.adView);
-
-        //MobileAds.initialize(this, "ca-app-pub-3940256099942544/5224354917");
-        MobileAds.initialize(this, "ca-app-pub-7610777618304000~5667345644");
+        MobileAds.initialize(this, "ca-app-pub-XXXXXXX");
 
 
         mAdView = findViewById(R.id.adView);
-        //AdRequest adRequest = new AdRequest.Builder().build();
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
         mAdView.loadAd(adRequest);
 
-      //  bt_loop = (ImageButton) findViewById(R.id.bt_menu_reproducir_loop);
         bt_play = (ImageButton) findViewById(R.id.bt_menu_reproducir_play);
         bt_pause = (ImageButton) findViewById(R.id.bt_menu_reproducir_pause);
         bt_stop = (ImageButton) findViewById(R.id.bt_menu_reproducir_stop);
@@ -243,13 +216,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick_Play_Control(View v){
         try {
-            //Log.d(TAG, "position actual = "+position);
-            //Log.d(TAG, "tama#o text= "+et_text.getText().toString().length());
             if(et_text.getText().toString().length()==0) return;
             if((position+1)>=(et_text.getText().toString().length())) position = 0;
             //Flashlight
             if(output==1){
-               // Log.d(TAG, "entro a play control= "+morseToFlashlightObj.running_thread_morseToFlashLight());
 
                     if (!threadFlashLight.isAlive()) {
                         if (morseToFlashlightObj.morseToFlashLightCheck(list_morse_translate,position)) {
@@ -258,8 +228,6 @@ public class MainActivity extends AppCompatActivity {
                             bt_pause.setColorFilter(Color.BLACK);
                             bt_play.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
-                            //bt_pause.setBackgroundColor(Color.WHITE);
-                           // bt_play.setBackgroundColor(Color.CYAN);
                         }
                     }
 
@@ -270,8 +238,6 @@ public class MainActivity extends AppCompatActivity {
                     if (morseToAudioObj.morseToAudioCheck(list_morse_translate,position)) {
                         threadAudio = new Thread(morseToAudioObj);
                         threadAudio.start();
-                       // bt_pause.setBackgroundColor(Color.WHITE);
-                        //bt_play.setBackgroundColor(Color.CYAN);
                         bt_pause.setColorFilter(Color.BLACK);
                         bt_play.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
                     }
@@ -292,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
                 if(loop_on){
                     morseToFlashlightObj.enable_loop();
                 }
-              //  bt_play.setBackgroundColor(Color.WHITE);
-               // bt_pause.setBackgroundColor(Color.CYAN);
                 bt_play.setColorFilter(Color.BLACK);
                 bt_pause.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
@@ -307,8 +271,6 @@ public class MainActivity extends AppCompatActivity {
                 if(loop_on){
                     morseToAudioObj.enable_loop();
                 }
-                //bt_play.setBackgroundColor(Color.WHITE);
-                //bt_pause.setBackgroundColor(Color.CYAN);
                 bt_play.setColorFilter(Color.BLACK);
                 bt_pause.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorAccent));
 
@@ -321,8 +283,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick_Stop_Control(View v){
         //Flashlight
-        //if(output==1){
-    //    bt_stop.setBackgroundColor(Color.CYAN);
         try {
             if (threadFlashLight.isAlive()) {
                 morseToFlashlightObj.disable_loop();
@@ -332,8 +292,7 @@ public class MainActivity extends AppCompatActivity {
                     morseToFlashlightObj.enable_loop();
                 }
             }
-            //}
-            //else{ //Sound
+
             if (threadAudio.isAlive()) {
                 morseToAudioObj.disable_loop();
                 //morseToAudioObj.turnOff();
@@ -342,12 +301,8 @@ public class MainActivity extends AppCompatActivity {
                     morseToAudioObj.enable_loop();
                 }
             }
-            //}
             position = 0;
             et_text.setSelection(0, 1);
-            //bt_stop.setBackgroundColor(Color.WHITE);
-            //bt_play.setBackgroundColor(Color.WHITE);
-            //bt_pause.setBackgroundColor(Color.WHITE);
             bt_play.setColorFilter(Color.BLACK);
             bt_pause.setColorFilter(Color.BLACK);
 
@@ -365,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if(morseToFlashlightObj.getLoop()){
                     morseToFlashlightObj.disable_loop();
-                 //   Toast.makeText(getApplicationContext(),"Loop disabled",Toast.LENGTH_SHORT).show();
                     loop_on = false;
 
                     //Cambia boton de loop a inactivo
@@ -374,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     morseToFlashlightObj.enable_loop();
-                   // Toast.makeText(getApplicationContext(),"Loop enabled",Toast.LENGTH_SHORT).show();
                     loop_on = true;
                     //Cambia boton de loop a activo
                     bt_loop.setBackgroundColor(Color.CYAN);
@@ -422,7 +375,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Se verifica cuando llegue al final
         if(position==(et_text.getText().length()-1)) {
-            //  bt_play.setBackgroundColor(Color.WHITE);
             bt_play.setColorFilter(Color.BLACK);
 
         }
